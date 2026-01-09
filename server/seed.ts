@@ -11,13 +11,14 @@ async function seed() {
     return;
   }
 
-  const hashedPassword = await bcrypt.hash("password123", 10);
+  const adminPassword = await bcrypt.hash("admin123", 10);
+  const userPassword = await bcrypt.hash("password123", 10);
 
   await db.insert(users).values([
-    { name: "Admin User", email: "admin@boardy.com", phone: "9876543210", roomNo: "A101", password: hashedPassword, role: "admin" },
-    { name: "John Doe", email: "john@example.com", phone: "9876543211", roomNo: "B202", password: hashedPassword, role: "user" },
-    { name: "Jane Smith", email: "jane@example.com", phone: "9876543212", roomNo: "C303", password: hashedPassword, role: "user" },
-    { name: "Mike Johnson", email: "mike@example.com", phone: "9876543213", roomNo: "D404", password: hashedPassword, role: "user" },
+    { name: "Admin User", email: "admin@boardy.com", phone: "9876543210", roomNo: "A101", password: adminPassword, role: "admin" },
+    { name: "John Doe", email: "john@example.com", phone: "9876543211", roomNo: "B202", password: userPassword, role: "user" },
+    { name: "Jane Smith", email: "jane@example.com", phone: "9876543212", roomNo: "C303", password: userPassword, role: "user" },
+    { name: "Mike Johnson", email: "mike@example.com", phone: "9876543213", roomNo: "D404", password: userPassword, role: "user" },
   ]);
 
   await db.insert(games).values([
