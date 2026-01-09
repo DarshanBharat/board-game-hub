@@ -274,6 +274,11 @@ export function registerRoutes(app: Express) {
     }
   });
 
+  app.get("/api/registrations", requireAdmin, async (req, res) => {
+    const registrations = await storage.getAllEventRegistrations();
+    res.json(registrations);
+  });
+
   app.get("/api/users", requireAdmin, async (req, res) => {
     const users = await storage.getAllUsers();
     res.json(users.map(u => ({ ...u, password: undefined })));

@@ -47,6 +47,7 @@ export default function EventDetail() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/registrations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/registrations/my"] });
       toast({ title: "Registration submitted!", description: "Please wait for admin to confirm your payment." });
       setIsRegisterDialogOpen(false);

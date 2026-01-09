@@ -38,11 +38,19 @@ export default function Admin() {
   const { data: rentals, isLoading: rentalsLoading } = useQuery<RentalWithDetails[]>({
     queryKey: ["/api/rentals"],
     enabled: isAdmin,
+    refetchInterval: 5000,
   });
 
   const { data: events, isLoading: eventsLoading } = useQuery<Event[]>({
     queryKey: ["/api/events"],
     enabled: isAdmin,
+    refetchInterval: 5000,
+  });
+
+  const { data: registrations, isLoading: regsLoading } = useQuery<RegistrationWithDetails[]>({
+    queryKey: ["/api/registrations"],
+    enabled: isAdmin,
+    refetchInterval: 5000,
   });
 
   const { data: users, isLoading: usersLoading } = useQuery<User[]>({
@@ -112,7 +120,12 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="events">
-              <EventsTab events={events || []} isLoading={eventsLoading} />
+              <EventsTab 
+                events={events || []} 
+                registrations={registrations || []}
+                updateRegistrationMutation={updateRegistrationMutation}
+                isLoading={eventsLoading || regsLoading} 
+              />
             </TabsContent>
 
             <TabsContent value="users">
@@ -651,7 +664,17 @@ function RentalsTab({
   );
 }
 
-function EventsTab({ events, isLoading }: { events: Event[]; isLoading: boolean }) {
+function EventsTab({ 
+  events, 
+  registrations,
+  updateRegistrationMutation,
+  isLoading 
+}: { 
+  events: Event[]; 
+  registrations: RegistrationWithDetails[];
+  updateRegistrationMutation: any;
+  isLoading: boolean 
+}) {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
@@ -667,14 +690,7 @@ function EventsTab({ events, isLoading }: { events: Event[]; isLoading: boolean 
     imageUrl: "",
   });
 
-  const { data: registrations } = useQuery<RegistrationWithDetails[]>({
-    queryKey: ["/api/events", selectedEvent?.id, "registrations"],
-    queryFn: async () => {
-      const res = await fetch(`/api/events/${selectedEvent?.id}/registrations`);
-      return res.json();
-    },
-    enabled: !!selectedEvent,
-  });
+  const eventRegistrations = registrations.filter(r => r.eventId === selectedEvent?.id);
 
   const addMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -702,7 +718,8 @@ function EventsTab({ events, isLoading }: { events: Event[]; isLoading: boolean 
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/events", selectedEvent?.id, "registrations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/registrations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/events"] });
       toast({ title: "Registration updated!" });
     },
     onError: (error: any) => {
@@ -883,8 +900,8 @@ function EventsTab({ events, isLoading }: { events: Event[]; isLoading: boolean 
               <DialogTitle>Manage: {selectedEvent?.name}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <h4 className="font-medium">Registrations ({registrations?.length || 0})</h4>
-              {!registrations || registrations.length === 0 ? (
+              <h4 className="font-medium">Registrations ({eventRegistrations?.length || 0})</h4>
+              {!eventRegistrations || eventRegistrations.length === 0 ? (
                 <p className="text-muted-foreground">No registrations yet</p>
               ) : (
                 <Table>
@@ -897,7 +914,7 @@ function EventsTab({ events, isLoading }: { events: Event[]; isLoading: boolean 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {registrations.map((reg) => (
+                    {eventRegistrations.map((reg) => (
                       <TableRow key={reg.id}>
                         <TableCell>
                           <div>

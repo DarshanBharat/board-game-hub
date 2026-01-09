@@ -48,6 +48,7 @@ export default function MyRentals() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rentals"] });
       queryClient.invalidateQueries({ queryKey: ["/api/rentals/my"] });
       toast({ title: "Return requested", description: "Admin will process your return soon." });
     },

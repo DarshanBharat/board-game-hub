@@ -51,6 +51,7 @@ export default function GameDetail() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/games"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/rentals"] });
       queryClient.invalidateQueries({ queryKey: ["/api/rentals/my"] });
       toast({ title: "Rental request submitted!", description: "Please wait for admin approval." });
       setIsRentDialogOpen(false);
