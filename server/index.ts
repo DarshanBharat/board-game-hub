@@ -31,12 +31,14 @@ app.use(
   })
 );
 
+// registerRoutes must be called before serving static files
 registerRoutes(app);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../dist")));
+  const distPath = path.resolve(__dirname, "../dist");
+  app.use(express.static(distPath));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist/index.html"));
+    res.sendFile(path.join(distPath, "index.html"));
   });
 }
 

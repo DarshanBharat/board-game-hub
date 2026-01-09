@@ -14,7 +14,7 @@ async function runBuild() {
       target: "node20",
       outfile: path.resolve(__dirname, "../dist/server/index.js"),
       format: "esm",
-      external: ["express", "express-session", "connect-pg-simple", "pg", "drizzle-orm", "drizzle-zod", "bcryptjs", "googleapis"],
+      external: ["express", "express-session", "connect-pg-simple", "pg", "drizzle-orm", "drizzle-zod", "bcryptjs", "googleapis", "path", "url"],
     });
     console.log("Server build complete");
   } catch (error) {
