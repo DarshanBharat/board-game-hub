@@ -1,5 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { storage } from "./storage";
+import { sendWelcomeEmail } from "./lib/email";
 import bcrypt from "bcryptjs";
 import {
   loginSchema,
@@ -48,6 +49,12 @@ export function registerRoutes(app: Express) {
         password: hashedPassword,
         role: "user",
       });
+      
+      // Send welcome email asynchronously
+      sendWelcomeEmail(user.email, user.name).catch(err => {
+        console.error("Welcome email background error:", err);
+      });
+
       req.session.userId = user.id;
       res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
     } catch (error: any) {
