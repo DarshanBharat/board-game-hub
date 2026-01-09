@@ -238,6 +238,7 @@ function GamesTab({ games, isLoading }: { games: Game[]; isLoading: boolean }) {
       complexity: "",
       imageUrl: "",
       rulesUrl: "",
+      videoRulesUrl: "",
       whatsInTheBox: "",
     });
   };

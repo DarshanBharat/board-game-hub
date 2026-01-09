@@ -28,6 +28,7 @@ export const games = pgTable("games", {
   imageUrl: text("image_url"),
   rulesUrl: text("rules_url"),
   videoRulesUrl: text("video_rules_url"),
+  rentalPrice: integer("rental_price").notNull().default(100),
   whatsInTheBox: json("whats_in_the_box").$type<string[]>().default([]),
   available: boolean("available").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
