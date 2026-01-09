@@ -702,6 +702,19 @@ function EventsTab({
 
   const eventRegistrations = registrations.filter(r => r.eventId === selectedEvent?.id);
 
+  const deleteEventMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/events/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/events"] });
+      toast({ title: "Event deleted!" });
+    },
+    onError: (error: any) => {
+      toast({ title: "Failed to delete event", description: error.message, variant: "destructive" });
+    },
+  });
+
   const updateRegistrationMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
       const res = await apiRequest("PATCH", `/api/registrations/${id}`, { status });
@@ -881,7 +894,7 @@ function EventsTab({
           </TableHeader>
           <TableBody>
             {events.map((event) => {
-              const eventRegs = registrations.filter(r => r.eventId === event.id && r.status === "confirmed");
+              const eventRegsCount = registrations.filter(r => r.eventId === event.id && r.status === "confirmed").length;
               return (
                 <TableRow key={event.id} data-testid={`event-row-${event.id}`}>
                   <TableCell className="font-medium">{event.name}</TableCell>
@@ -889,7 +902,7 @@ function EventsTab({
                   <TableCell>{event.location}</TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {eventRegs.length} / {event.capacity}
+                      {eventRegsCount} / {event.capacity}
                     </Badge>
                   </TableCell>
                   <TableCell>
