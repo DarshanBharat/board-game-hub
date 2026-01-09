@@ -70,7 +70,7 @@ export default function Login() {
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
               <div className="text-center">
-                <Link to="/forgot-password" size="sm" className="text-sm text-primary hover:underline" data-testid="link-forgot-password">
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline" data-testid="link-forgot-password">
                   Forgot Password?
                 </Link>
               </div>

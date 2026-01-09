@@ -15,7 +15,15 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (data: { name: string; email: string; phone: string; roomNo: string; password: string }) => Promise<void>;
+  signup: (data: { 
+    name: string; 
+    email: string; 
+    phone: string; 
+    roomNo: string; 
+    password: string;
+    secretQuestion: string;
+    secretAnswer: string;
+  }) => Promise<void>;
   logout: () => Promise<void>;
   forgotPassword: (email: string) => Promise<{ secretQuestion: string }>;
   verifyAnswer: (email: string, answer: string) => Promise<{ success: boolean }>;
@@ -42,7 +50,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const signupMutation = useMutation({
-    mutationFn: async (data: { name: string; email: string; phone: string; roomNo: string; password: string }) => {
+    mutationFn: async (data: { 
+      name: string; 
+      email: string; 
+      phone: string; 
+      roomNo: string; 
+      password: string;
+      secretQuestion: string;
+      secretAnswer: string;
+    }) => {
       const res = await apiRequest("POST", "/api/auth/signup", data);
       return res.json();
     },
@@ -64,7 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loginMutation.mutateAsync({ email, password });
   };
 
-  const signup = async (data: { name: string; email: string; phone: string; roomNo: string; password: string }) => {
+  const signup = async (data: { 
+    name: string; 
+    email: string; 
+    phone: string; 
+    roomNo: string; 
+    password: string;
+    secretQuestion: string;
+    secretAnswer: string;
+  }) => {
     await signupMutation.mutateAsync(data);
   };
 

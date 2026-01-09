@@ -90,7 +90,13 @@ export const eventRegistrationsRelations = relations(eventRegistrations, ({ one 
   event: one(events, { fields: [eventRegistrations.eventId], references: [events.id] }),
 }));
 
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const insertUserSchema = createInsertSchema(users, {
+  secretQuestion: z.string().min(1),
+  secretAnswer: z.string().min(1),
+}).omit({ 
+  id: true, 
+  createdAt: true 
+});
 export const insertGameSchema = createInsertSchema(games).omit({ id: true, createdAt: true });
 export const insertRentalSchema = createInsertSchema(rentals).omit({ id: true, createdAt: true });
 export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
