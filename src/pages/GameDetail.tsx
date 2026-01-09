@@ -219,6 +219,26 @@ export default function GameDetail() {
                           data-testid="input-end-date"
                         />
                       </div>
+                      {rentalForm.startDate && rentalForm.endDate && (
+                        <div className="bg-primary/10 p-4 rounded-xl border border-primary/20">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Rental Period:</span>
+                            <span className="text-sm">
+                              {Math.max(0, Math.ceil((new Date(rentalForm.endDate).getTime() - new Date(rentalForm.startDate).getTime()) / (1000 * 60 * 60 * 24)))} days
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-sm font-medium">Rate:</span>
+                            <span className="text-sm">Rs. {game.rentalPrice}/day</span>
+                          </div>
+                          <div className="flex justify-between items-center mt-2 pt-2 border-t border-primary/20">
+                            <span className="font-bold text-primary">Total Payable:</span>
+                            <span className="font-bold text-primary text-lg">
+                              Rs. {Math.max(0, Math.ceil((new Date(rentalForm.endDate).getTime() - new Date(rentalForm.startDate).getTime()) / (1000 * 60 * 60 * 24))) * game.rentalPrice}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                       <Card className="bg-muted">
                         <CardContent className="pt-4">
                           <p className="font-medium mb-2">Payment Instructions</p>
