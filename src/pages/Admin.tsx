@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
-import { Plus, Edit, Trash2, Eye, Check, X } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, Check, X, Package } from "lucide-react";
 import type { Game, User, Rental, Event, EventRegistration } from "@shared/schema";
 
 type RentalWithDetails = Rental & { user?: User; game?: Game };

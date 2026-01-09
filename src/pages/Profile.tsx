@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail, Phone, Home, Edit, Package, Calendar, History, PlayCircle } from "lucide-react";
 import type { Rental, EventRegistration, Event } from "@shared/schema";
@@ -17,6 +18,7 @@ type RegistrationWithEvent = EventRegistration & { event?: Event };
 export default function Profile() {
   const navigate = useNavigate();
   const { user, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState<"rentals" | "events">("rentals");
 
