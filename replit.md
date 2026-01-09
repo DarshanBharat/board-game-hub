@@ -33,10 +33,11 @@ A full-stack board game rental platform built with React, Express, TypeScript, a
 - Event registration for Saturday night gaming events
 - Admin dashboard for managing games, rentals, events, and users
 - Game availability automatically updates based on rental status
+- Video rules link and view functionality
 
 ## Database Schema
 - **users**: id, email, password, name, phone, roomNumber, isAdmin
-- **games**: id, name, description, category, minPlayers, maxPlayers, playTime, complexity, imageUrl, rulesUrl, boxContents, available, rentalPrice
+- **games**: id, name, description, category, minPlayers, maxPlayers, playTime, complexity, imageUrl, rulesUrl, videoRulesUrl, boxContents, available, rentalPrice
 - **rentals**: id, userId, gameId, startDate, endDate, status, paymentPhone, paymentTime, createdAt
 - **events**: id, title, description, date, time, location, maxParticipants, currentParticipants, price, imageUrl
 - **event_registrations**: id, eventId, userId, status, paymentPhone, paymentTime, createdAt
@@ -47,7 +48,7 @@ A full-stack board game rental platform built with React, Express, TypeScript, a
 - Run `npm run db:seed` to seed database with test data
 
 ## Deployment
-Configured for autoscale deployment. Build: `npm run build`, Run: `node dist/server/index.js`
+Configured for autoscale deployment. Build: `npm run build`, Run: `npm run start`
 
 ## Test Accounts
 - Admin: admin@boardy.com / admin123
@@ -61,3 +62,5 @@ Configured for autoscale deployment. Build: `npm run build`, Run: `node dist/ser
   - Event registration system
   - Admin dashboard with full CRUD operations
   - Seeded with test data (4 users, 6 games, 2 events)
+  - Added video rules link and view functionality
+  - Fixed deployment build configuration for full-stack architecture
