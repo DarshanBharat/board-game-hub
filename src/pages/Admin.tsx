@@ -58,21 +58,6 @@ export default function Admin() {
     enabled: isAdmin,
   });
 
-  const updateRegistrationMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const res = await apiRequest("PATCH", `/api/registrations/${id}`, { status });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/registrations"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/events"] });
-      toast({ title: "Registration updated!" });
-    },
-    onError: (error: any) => {
-      toast({ title: "Failed to update registration", description: error.message, variant: "destructive" });
-    },
-  });
-
   if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -736,21 +721,6 @@ function EventsTab({
     },
     onError: (error: any) => {
       toast({ title: "Failed to create event", description: error.message, variant: "destructive" });
-    },
-  });
-
-  const updateRegistrationMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const res = await apiRequest("PATCH", `/api/registrations/${id}`, { status });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/registrations"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/events"] });
-      toast({ title: "Registration updated!" });
-    },
-    onError: (error: any) => {
-      toast({ title: "Failed to update registration", description: error.message, variant: "destructive" });
     },
   });
 
