@@ -1,10 +1,10 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull(),
@@ -13,11 +13,11 @@ export const users = pgTable("users", {
   secretQuestion: text("secret_question").notNull(),
   secretAnswer: text("secret_answer").notNull(),
   role: text("role").notNull().default("user"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
-export const games = pgTable("games", {
-  id: serial("id").primaryKey(),
+export const games = sqliteTable("games", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
@@ -28,45 +28,45 @@ export const games = pgTable("games", {
   imageUrl: text("image_url"),
   rulesUrl: text("rules_url"),
   videoRulesUrl: text("video_rules_url"),
-  whatsInTheBox: json("whats_in_the_box").$type<string[]>().default([]),
-  available: boolean("available").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  whatsInTheBox: text("whats_in_the_box", { mode: "json" }).$type<string[]>().default([]),
+  available: integer("available", { mode: "boolean" }).notNull().default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
-export const rentals = pgTable("rentals", {
-  id: serial("id").primaryKey(),
+export const rentals = sqliteTable("rentals", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").notNull().references(() => users.id),
   gameId: integer("game_id").notNull().references(() => games.id),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
+  startDate: integer("start_date", { mode: "timestamp" }).notNull(),
+  endDate: integer("end_date", { mode: "timestamp" }).notNull(),
   status: text("status").notNull().default("pending"),
   paymentPhone: text("payment_phone"),
-  paymentTime: timestamp("payment_time"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  paymentTime: integer("payment_time", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
-export const events = pgTable("events", {
-  id: serial("id").primaryKey(),
+export const events = sqliteTable("events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  date: timestamp("date").notNull(),
+  date: integer("date", { mode: "timestamp" }).notNull(),
   time: text("time").notNull(),
   location: text("location").notNull(),
   capacity: integer("capacity").notNull(),
   price: integer("price").notNull().default(0),
   imageUrl: text("image_url"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
-export const eventRegistrations = pgTable("event_registrations", {
-  id: serial("id").primaryKey(),
+export const eventRegistrations = sqliteTable("event_registrations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").notNull().references(() => users.id),
   eventId: integer("event_id").notNull().references(() => events.id),
   status: text("status").notNull().default("pending"),
-  attended: boolean("attended").notNull().default(false),
+  attended: integer("attended", { mode: "boolean" }).notNull().default(false),
   paymentPhone: text("payment_phone"),
-  paymentTime: timestamp("payment_time"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  paymentTime: integer("payment_time", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -132,15 +132,15 @@ export const eventRegistrationRequestSchema = z.object({
   paymentTime: z.string().optional(),
 });
 
-export const notifications = pgTable("notifications", {
-  id: serial("id").primaryKey(),
+export const notifications = sqliteTable("notifications", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").notNull().references(() => users.id),
   type: text("type").notNull(), // 'payment_approved', 'payment_rejected', 'rental_reminder', 'rental_overdue', 'event_reminder', 'admin_alert'
   title: text("title").notNull(),
   message: text("message").notNull(),
-  read: boolean("read").notNull().default(false),
+  read: integer("read", { mode: "boolean" }).notNull().default(false),
   relatedId: integer("related_id"), // ID of rental or event
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(strftime('%s', 'now'))`).notNull(),
 });
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({

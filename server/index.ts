@@ -1,7 +1,7 @@
 import express from "express";
 import session from "express-session";
-import connectPgSimple from "connect-pg-simple";
-import { pool } from "./db";
+import connectSqlite3 from "connect-sqlite3";
+import { db } from "./db";
 import { registerRoutes } from "./routes";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -10,17 +10,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PgSession = connectPgSimple(session);
+const SQLiteStore = connectSqlite3(session);
 
 app.use(express.json());
 app.use(
   session({
-    store: new PgSession({
-      pool: pool,
-      tableName: "session",
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(32).toString("hex"),
+    store: new SQLiteStore({
+      db: process.env.DATABASE_URL || "sqlite.db",
+      table: "session",
+    }) as any,
+    secret: process.env.SESSION_SECRET || "development-secret-key-123456789",
     resave: false,
     saveUninitialized: false,
     cookie: {
